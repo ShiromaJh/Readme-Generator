@@ -1,11 +1,12 @@
 const fs = require("fs");
 const inquirer = require("inquirer");
-const Choices = require("inquirer/lib/objects/choices");
 const { report } = require("process");
 const util = require("util");
-
+//promisification 
 const writeFileAsync = util.promisify(fs.writeFile);
 
+
+//Question array
 function questionArr() {
   return inquirer.prompt([
     {
@@ -62,6 +63,7 @@ function questionArr() {
   ]);
 }
 
+//function that adds the license badge to the corresponding badge chosen in question 3
 function generateMD(response) {
   let badge = "";
   if (response.license == "MIT") {
@@ -80,7 +82,9 @@ function generateMD(response) {
 
   return `# ${response.title}  ${badge}
 ${response.description}
+
 ## Table of Contents:
+
 * [Installation](#installation)
 * [Usage](#usage)
 * [License](#license)
@@ -89,7 +93,9 @@ ${response.description}
 * [Questions](#questions)
 ### Installation:
 Open console and run the following
+
 \`\`\`${response.installations}\`\`\`
+
 ### Usage:
 ${response.usage}
 ### License:
@@ -97,9 +103,12 @@ This project is licensed under:
 ${response.license}
 ### Contributing:
 ${response.contribute}
+
 ### Tests:
-In order to test open the console and run the following:
+To test:
 \`\`\`${response.tests}\`\`\`
+
+
 ### Questions:
 If you have any questions contact me on [GitHub](https://github.com/${response.username}) or contact 
 me at ${response.email}
@@ -108,14 +117,19 @@ me at ${response.email}
  `;
 }
 
+
+//function that creates README file and joins with the markdown file type
 questionArr()
   .then(function (response) {
     const markdown = generateMD(response);
-    return writeFileAsync("./generated/generatedREADME.md", markdown);
+    //i have my generated readme file placed in a specific folder
+    //promisification 
+    return writeFileAsync("./readme-generator/generated", markdown);
   })
   .then(function () {
-    console.log("Generating README.md ...");
+    console.log("creating your README.md ...");
   })
+  //returning promise for error case only
   .catch(function (err) {
     console.log(err);
   });

@@ -1,5 +1,5 @@
-# Readme Generator  ![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)
-creates a readme for your project
+# Readme generator  ![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)
+created a readme
 ## Table of Contents:
 * [Installation](#installation)
 * [Usage](#usage)
@@ -8,21 +8,21 @@ creates a readme for your project
 * [Tests](#tests)
 * [Questions](#questions)
 ### Installation:
-In order to install the necessary dependencies, open the console and run the following:
-```node.js```
+Open console and run the following
+```none```
 ### Usage:
-n/a
+none
 ### License:
 This project is licensed under:
 MIT
 ### Contributing:
-no contributions at this time
+none
 ### Tests:
-In order to test open the console and run the following:
-```n/a```
+To test:
+```none```
 ### Questions:
-If you have any questions contact me on [GitHub](https://github.com/ShiromaJh) or contact 
-me at justinhoffman193@gmail.com
-![picture](https://github.com/ShiromaJh.png?size=80)
+If you have any questions contact me on [GitHub](https://github.com/shiromajh) or contact 
+me at justinhoffman193@gmail.copm
+![picture](https://github.com/shiromajh.png?size=80)
     
  
