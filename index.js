@@ -88,7 +88,7 @@ ${response.description}
 * [Tests](#tests)
 * [Questions](#questions)
 ### Installation:
-In order to install the necessary dependencies, open the console and run the following:
+Open console and run the following
 \`\`\`${response.installations}\`\`\`
 ### Usage:
 ${response.usage}
