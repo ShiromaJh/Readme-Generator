@@ -9,8 +9,8 @@ creates a readme for your project
 * [Tests](#tests)
 * [Questions](#questions)
 ### Installation:
-In order to install the necessary dependencies, open the console and run the following:
-```node.js```
+Open the console and run the following:
+```index node.js```
 ### Usage:
 n/a
 ### License:
