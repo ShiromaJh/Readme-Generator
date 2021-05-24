@@ -1,159 +1,121 @@
-// TODO: Include packages needed for this application
-const inquirer = require("inquirer");
 const fs = require("fs");
-const generate = require("./utils/generateMarkdown.js");
-const { type } = require("os");
-// TODO: Create an array of questions for user input
+const inquirer = require("inquirer");
+const Choices = require("inquirer/lib/objects/choices");
+const { report } = require("process");
+const util = require("util");
 
-inquirer
-  .prompt(
-    [
-      {
-        type: "input",
-        message: "What is your project title?",
-        name: "title",
-        validate: (value) => {
-          if (value) {
-            return true;
-          } else {
-            return "Please enter a project title";
-          }
-        },
-      },
-    ],
+const writeFileAsync = util.promisify(fs.writeFile);
+
+function questionArr() {
+  return inquirer.prompt([
     {
       type: "input",
-      message: "Please describe your project:",
+      name: "title",
+      message: "What is the title of your project?",
+    },
+    {
+      type: "input",
       name: "description",
-      validate: (value) => {
-        if (value) {
-          return true;
-        } else {
-          return "Please enter a project description";
-        }
-      },
-    },
-
-    {
-      type: "input",
-      message: "What are the instructions for installation",
-      name: "installation",
-      validate: (value) => {
-        if (value) {
-          return true;
-        } else {
-          return "Please enter the installation instructions";
-        }
-      },
-    },
-    {
-      type: "input",
-      message: "What is the usage information for your project?",
-      name: "usage",
-      validate: (value) => {
-        if (value) {
-          return true;
-        } else {
-          return "Please enter the project usage information";
-        }
-      },
-    },
-    {
-      type: "input",
-      message: "What are the contribution guidelines for your project?",
-      name: "contribution",
-      validate: (value) => {
-        if (value) {
-          return true;
-        } else {
-          return "Please enter your contribution guidlines";
-        }
-      },
-    },
-    {
-      type: "input",
-      message: "What is your project's testing intructions?",
-      name: "testing",
-      validate: (value) => {
-        if (value) {
-          return true;
-        } else {
-          return "Please enter the intructions for testing";
-        }
-      },
+      message: "Please write a description of your project:",
     },
     {
       type: "list",
-      message: "what license did you use?",
-      name: "licenses",
-      choices: ["MIT", "GPL", "Apache", "GNU", "N/A"],
-      validate: (value) => {
-        if (value) {
-          return true;
-        } else {
-          return "Please choose an option";
-        }
-      },
+      name: "license",
+      message: "What license did you use?",
+      choices: ["MIT", "APACHE 2.0", "GPL 3.0", "BSD 3", "None"],
     },
     {
       type: "input",
-      message: "Please enter your Github Username",
-      name: "github",
-      validate: (value) => {
-        if (value) {
-          return true;
-        } else {
-          return "Please enter your github username";
-        }
-      },
+      name: "installations",
+      message: "What are the instructions for installation?",
     },
     {
       type: "input",
-      message: "Please enter your email adress",
+      name: "tests",
+      message: "What are the intructions for running tests?",
+    },
+    {
+      type: "input",
+      name: "usage",
+      message: "What is the usage information?",
+    },
+    {
+      type: "input",
+      name: "contribute",
+      message: "What are you rules for contribution?",
+    },
+    {
+      type: "input",
+      name: "author",
+      message: "What is your name?",
+    },
+    {
+      type: "input",
+      name: "username",
+      message: "What is your GitHub username?",
+    },
+    {
+      type: "input",
       name: "email",
-      validate: (value) => {
-        if (value) {
-          return true;
-        } else {
-          return "Please enter your email adress";
-        }
-      },
-    }
-  )
-  .then(({
-    title,
-    desciption,
-    intallation,
-    usage,
-    contribution,
-    testing,
-    licenses,
-    github,
-    email
-  })=>{
-      const temp = `# ${title}
-    *[Installation]{#installation}
-    *[usage]{#usage}
-    *[contribution]{#contribution}
-    *[testing]{#testing}
-    *[licenses]{#licenses}
-    *[github]{#github}
-    *[email]{#email}
+      message: "What is your email address?",
+    },
+  ]);
+}
 
+function generateMD(response) {
+  let badge = "";
+  if (response.license == "MIT") {
+    badge =
+      "![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)";
+  } else if (response.license == "APACHE 2.0") {
+    badge =
+      "![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)";
+  } else if (response.license == "GPL 3.0") {
+    badge =
+      "![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)";
+  } else if (response.license == "BSD 3") {
+    badge =
+      "![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)";
+  }
 
+  return `# ${response.title}  ${badge}
+${response.description}
+## Table of Contents:
+* [Installation](#installation)
+* [Usage](#usage)
+* [License](#license)
+* [Contributing](#contributing)
+* [Tests](#tests)
+* [Questions](#questions)
+### Installation:
+In order to install the necessary dependencies, open the console and run the following:
+\`\`\`${response.installations}\`\`\`
+### Usage:
+${response.usage}
+### License:
+This project is licensed under:
+${response.license}
+### Contributing:
+${response.contribute}
+### Tests:
+In order to test open the console and run the following:
+\`\`\`${response.tests}\`\`\`
+### Questions:
+If you have any questions contact me on [GitHub](https://github.com/${response.username}) or contact 
+me at ${response.email}
+![picture](https://github.com/${response.username}.png?size=80)
+    
+ `;
+}
 
-
-
-
-      `
-
+questionArr()
+  .then(function (response) {
+    const markdown = generateMD(response);
+    return writeFileAsync("./generated/generatedREADME.md", markdown);
+  })
+  .then(function () {
+    console.log("Generating README.md ...");
+  })
+  .catch(function (err) {
+    console.log(err);
   });
-
-// TODO: Create a function to write README file
-function writeToFile(fileName, data) {}
-
-// TODO: Create a function to initialize app
-function init() {}
-
-// Function call to initialize app
-init();
